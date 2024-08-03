@@ -26,6 +26,10 @@ class GithubPaginationSource(
         return result
     }
 
+    fun getCurrentPage(): Int {
+        return currentPage
+    }
+
     fun resetPager() {
         currentPage = 2
     }
