@@ -7,14 +7,12 @@ import com.markusw.bankuishchallenge.DispatcherProvider
 import com.markusw.bankuishchallenge.core.utils.Result
 import com.markusw.bankuishchallenge.network.domain.model.GithubRepository
 import com.markusw.bankuishchallenge.network.domain.repository.GithubReposRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.security.PrivateKey
 
 class DetailsViewModel(
     private val githubReposRepository: GithubReposRepository,
@@ -23,7 +21,7 @@ class DetailsViewModel(
 ) : ViewModel() {
 
     companion object {
-        private const val REPO_ID = "repoId"
+        const val REPO_ID = "repoId"
     }
 
     private val _state = MutableStateFlow(DetailsState())
@@ -47,28 +45,27 @@ class DetailsViewModel(
         viewModelScope.launch(dispatcherProvider.io) {
             when (val result = githubReposRepository.getRepository(repoId)) {
                 is Result.Error -> {
+                    _state.update {
+                        it.copy(
+                            loadError = result.message,
+                            isLoadingRepository = false
+                        )
+                    }
                     channel.send(
                         DetailsViewModelEvents.RepositoryLoadFailed(
                             reason = result.message ?: "Unknown Error"
                         )
                     )
-                    _state.update {
-                        it.copy(loadError = result.message)
-                    }
                 }
 
                 is Result.Success -> {
                     _state.update {
                         it.copy(
                             repository = result.data ?: GithubRepository(),
+                            isLoadingRepository = false
                         )
                     }
                 }
-            }
-            _state.update {
-                it.copy(
-                    isLoadingRepository = false
-                )
             }
         }
     }
