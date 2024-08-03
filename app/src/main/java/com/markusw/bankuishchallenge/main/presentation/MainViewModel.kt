@@ -45,27 +45,27 @@ class MainViewModel(
 
             when (result) {
                 is Result.Error -> {
+                    _state.update {
+                        it.copy(
+                            loadError = result.message,
+                            isLoadingInitialRepositories = false
+                        )
+                    }
                     eventsChannel.send(
                         MainViewModelEvent.RepositoriesLoadFailed(
                             reason = result.message ?: "Unknown Error"
                         )
                     )
-                    _state.update {
-                        it.copy(loadError = result.message)
-                    }
                 }
 
                 is Result.Success -> {
                     _state.update {
                         it.copy(
                             repositories = result.data ?: emptyList(),
+                            isLoadingInitialRepositories = false
                         )
                     }
                 }
-            }
-
-            _state.update {
-                it.copy(isLoadingInitialRepositories = false)
             }
 
         }
@@ -126,31 +126,27 @@ class MainViewModel(
 
             when (result) {
                 is Result.Error -> {
+                    _state.update {
+                        it.copy(
+                            loadError = result.message,
+                            isRefreshing = false
+                        )
+                    }
                     eventsChannel.send(
                         MainViewModelEvent.RepositoriesLoadFailed(
                             reason = result.message ?: "Unknown Error"
                         )
                     )
-                    _state.update {
-                        it.copy(
-                            loadError = result.message
-                        )
-                    }
                 }
 
                 is Result.Success -> {
                     _state.update {
                         it.copy(
                             repositories = result.data ?: emptyList(),
+                            isRefreshing = false
                         )
                     }
                 }
-            }
-
-            _state.update {
-                it.copy(
-                    isRefreshing = false
-                )
             }
         }
     }
