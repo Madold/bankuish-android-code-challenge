@@ -4,25 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.markusw.bankuishchallenge.core.presentation.Screens
 import com.markusw.bankuishchallenge.main.presentation.MainScreen
 import com.markusw.bankuishchallenge.main.presentation.MainViewModel
-import com.markusw.bankuishchallenge.main.presentation.components.GithubRepoItem
 import com.markusw.bankuishchallenge.ui.theme.BankuishAndroidCodeChallengeTheme
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinContext
@@ -32,15 +23,34 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            KoinContext {
-                val viewModel = koinViewModel<MainViewModel>()
-                val state by viewModel.state.collectAsStateWithLifecycle()
+            BankuishAndroidCodeChallengeTheme {
+                KoinContext {
+                    val navController = rememberNavController()
 
-                BankuishAndroidCodeChallengeTheme {
-                    MainScreen(
-                        state = state,
-                        onBottomReached = viewModel::onBottomReached
-                    )
+                    NavHost(navController = navController, startDestination = Screens.Main.route) {
+
+                        composable(route = Screens.Main.route) {
+                            val viewModel = koinViewModel<MainViewModel>()
+                            val state by viewModel.state.collectAsStateWithLifecycle()
+
+                            MainScreen(
+                                state = state,
+                                onBottomReached = viewModel::onBottomReached
+                            )
+                        }
+
+                        composable(
+                            route = "${Screens.Details}/{repoId}",
+                            arguments = listOf(
+                                navArgument("repoId") {
+                                    type = NavType.StringType
+                                }
+                            )
+                        ) {
+
+                        }
+
+                    }
                 }
             }
         }
