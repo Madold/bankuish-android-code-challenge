@@ -10,8 +10,8 @@ class GithubPaginationSource(
 ) : PaginationSource<Int, GithubRepository> {
 
     companion object {
-        private const val LANGUAGE = "kotlin"
-        private const val PAGE_COUNT = 20
+        const val LANGUAGE = "kotlin"
+        const val PAGE_COUNT = 20
     }
 
     private var currentPage: Int = 2
@@ -22,7 +22,10 @@ class GithubPaginationSource(
             count = PAGE_COUNT,
             page = currentPage
         )
-        currentPage++
+
+        if (result is Result.Success) {
+            currentPage++
+        }
         return result
     }
 
