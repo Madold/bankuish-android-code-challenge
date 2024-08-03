@@ -16,24 +16,12 @@ class GithubPaginationSource(
 
     private var currentPage: Int = 2
 
-    override suspend fun loadNextPage(): List<GithubRepository> {
-        val result = githubReposRepository.getRepositories(
+    override suspend fun loadNextPage(): Result<List<GithubRepository>> {
+        return githubReposRepository.getRepositories(
             language = LANGUAGE,
             count = PAGE_COUNT,
             page = currentPage
         )
-        val repositories = when (result) {
-            is Result.Error -> {
-                //TODO: Make an error handling when API Rate is Exceeded
-                emptyList()
-            }
-            is Result.Success -> {
-                currentPage++
-                result.data ?: emptyList()
-            }
-        }
-
-        return repositories
     }
 
     fun resetPager() {

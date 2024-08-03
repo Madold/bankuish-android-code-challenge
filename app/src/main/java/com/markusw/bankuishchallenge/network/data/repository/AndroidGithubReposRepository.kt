@@ -5,6 +5,7 @@ import com.markusw.bankuishchallenge.network.domain.model.GithubRepository
 import com.markusw.bankuishchallenge.network.domain.model.toDomainModel
 import com.markusw.bankuishchallenge.network.domain.remote.services.GithubService
 import com.markusw.bankuishchallenge.network.domain.repository.GithubReposRepository
+import java.net.UnknownHostException
 
 class AndroidGithubReposRepository(
     private val githubService: GithubService
@@ -22,6 +23,8 @@ class AndroidGithubReposRepository(
                 .map { it.toDomainModel() }
 
             Result.Success(result)
+        } catch (e: UnknownHostException) {
+          Result.Error("No internet connection")
         } catch (e: Exception) {
             e.printStackTrace()
             Result.Error("Error: ${e.message}")
@@ -34,6 +37,8 @@ class AndroidGithubReposRepository(
                 .getRepository(id)
                 .toDomainModel()
             Result.Success(result)
+        } catch (e: UnknownHostException) {
+            Result.Error("No internet connection")
         } catch (e: Exception) {
             e.printStackTrace()
             Result.Error("Error: ${e.message}")

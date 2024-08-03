@@ -3,6 +3,7 @@
 package com.markusw.bankuishchallenge.details.presentation
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,14 +28,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -51,9 +56,13 @@ import com.markusw.bankuishchallenge.network.domain.model.GithubRepository
 @Composable
 fun DetailsScreen(
     state: DetailsState,
-    navController: NavController
+    navController: NavController,
+    snackBarHostState: SnackbarHostState
 ) {
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState)
+        },
         topBar = {
             TopAppBar(title = {
                 Text(
@@ -85,95 +94,110 @@ fun DetailsScreen(
                     CircularProgressIndicator()
                 }
             } else {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    AsyncImage(
-                        model = ImageRequest
-                            .Builder(LocalContext.current)
-                            .data(state.repository.authorAvatarUrl)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = null,
+                if (state.loadError != null) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.load_error_image),
+                            contentDescription = null
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "An error occurred while fetching repository info",
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                } else {
+                    Column(
                         modifier = Modifier
-                            .size(150.dp)
-                            .clip(CircleShape),
-                        contentScale = ContentScale.FillWidth
-                    )
-
-                    Text(
-                        text = "By: ${state.repository.authorName}",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-
-                    FlowRow(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(horizontal = 16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        state.repository.topics.forEach { topic ->
-                            AssistChip(
-                                onClick = { },
-                                label = { Text(text = topic) },
-                                colors = AssistChipDefaults.assistChipColors(
-                                    containerColor = generateRandomColor()
-                                )
-                            )
-                        }
-                    }
-
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        RepoDetailItem(
-                            icon = R.drawable.ic_eye,
-                            label = "${state.repository.watchersCount} Watchers"
-                        )
-                        RepoDetailItem(
-                            icon = R.drawable.ic_issue,
-                            label = "${state.repository.openIssuesCount} Issues"
-                        )
-                        RepoDetailItem(
-                            icon = R.drawable.ic_fork,
-                            label = "${state.repository.forksCount} Forks"
-                        )
-                        RepoDetailItem(
-                            icon = R.drawable.ic_star,
-                            label = "${state.repository.starsCount} Stars"
+                        AsyncImage(
+                            model = ImageRequest
+                                .Builder(LocalContext.current)
+                                .data(state.repository.authorAvatarUrl)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(150.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.FillWidth
                         )
 
-                    }
+                        Text(
+                            text = "By: ${state.repository.authorName}",
+                            style = MaterialTheme.typography.titleMedium
+                        )
 
-                    if (state.repository.homepageUrl.isNotBlank()) {
-                        Box(
+                        FlowRow(
                             modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.TopStart
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            HyperLinkButton(
-                                label = "Visit Homepage",
-                                link = state.repository.homepageUrl
-                            )
+                            state.repository.topics.forEach { topic ->
+                                AssistChip(
+                                    onClick = { },
+                                    label = { Text(text = topic) },
+                                    colors = AssistChipDefaults.assistChipColors(
+                                        containerColor = generateRandomColor()
+                                    )
+                                )
+                            }
                         }
+
+                        FlowRow(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            RepoDetailItem(
+                                icon = R.drawable.ic_eye,
+                                label = "${state.repository.watchersCount} Watchers"
+                            )
+                            RepoDetailItem(
+                                icon = R.drawable.ic_issue,
+                                label = "${state.repository.openIssuesCount} Issues"
+                            )
+                            RepoDetailItem(
+                                icon = R.drawable.ic_fork,
+                                label = "${state.repository.forksCount} Forks"
+                            )
+                            RepoDetailItem(
+                                icon = R.drawable.ic_star,
+                                label = "${state.repository.starsCount} Stars"
+                            )
+
+                        }
+
+                        if (state.repository.homepageUrl.isNotBlank()) {
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.TopStart
+                            ) {
+                                HyperLinkButton(
+                                    label = "Visit Homepage",
+                                    link = state.repository.homepageUrl
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Text(
+                            text = state.repository.description,
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Justify
+                        )
                     }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(
-                        text = state.repository.description,
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Justify
-                    )
                 }
             }
-
         }
-
-
     }
 }
 
@@ -184,6 +208,7 @@ fun DetailsScreen(
 @Composable
 fun DetailsScreenPreview() {
     DetailsScreen(
+        snackBarHostState = remember { SnackbarHostState() },
         navController = rememberNavController(),
         state = DetailsState(
             repository = GithubRepository(

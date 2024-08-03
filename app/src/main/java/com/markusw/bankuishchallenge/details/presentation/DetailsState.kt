@@ -4,5 +4,6 @@ import com.markusw.bankuishchallenge.network.domain.model.GithubRepository
 
 data class DetailsState(
     val repository: GithubRepository = GithubRepository(),
-    val isLoadingRepository: Boolean = false
+    val isLoadingRepository: Boolean = false,
+    val loadError: String? = null
 )

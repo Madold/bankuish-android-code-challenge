@@ -6,9 +6,10 @@ import com.markusw.bankuishchallenge.core.utils.Result
 import com.markusw.bankuishchallenge.main.data.GithubPaginationSource
 import com.markusw.bankuishchallenge.network.domain.repository.GithubReposRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -19,15 +20,18 @@ class MainViewModel(
 
     private val _state = MutableStateFlow(MainState())
     val state = _state.asStateFlow()
+    private val eventsChannel = Channel<MainViewModelEvent>()
+    val events = eventsChannel.receiveAsFlow()
 
     init {
         loadInitialRepositories()
     }
 
-    private fun loadInitialRepositories() {
+    fun loadInitialRepositories() {
         _state.update {
             it.copy(
-                isLoadingInitialRepositories = true
+                isLoadingInitialRepositories = true,
+                loadError = null
             )
         }
         viewModelScope.launch(Dispatchers.IO) {
@@ -39,17 +43,27 @@ class MainViewModel(
 
             when (result) {
                 is Result.Error -> {
-                    //TODO Handle error
+                    eventsChannel.send(
+                        MainViewModelEvent.RepositoriesLoadFailed(
+                            reason = result.message ?: "Unknown Error"
+                        )
+                    )
+                    _state.update {
+                        it.copy(loadError = result.message)
+                    }
                 }
 
                 is Result.Success -> {
                     _state.update {
                         it.copy(
                             repositories = result.data ?: emptyList(),
-                            isLoadingInitialRepositories = false
                         )
                     }
                 }
+            }
+
+            _state.update {
+                it.copy(isLoadingInitialRepositories = false)
             }
 
         }
@@ -66,12 +80,23 @@ class MainViewModel(
             it.copy(isLoadingMoreRepositories = true)
         }
         viewModelScope.launch(Dispatchers.IO) {
-            val newRepositories = githubPaginationSource.loadNextPage()
-            _state.update {
-                it.copy(
-                    isLoadingMoreRepositories = false,
-                    repositories = it.repositories + newRepositories
-                )
+            when (val result = githubPaginationSource.loadNextPage()) {
+                is Result.Error -> {
+                    eventsChannel.send(
+                        MainViewModelEvent.LoadNextPageFailed(
+                            reason = result.message ?: "Unknown Error"
+                        )
+                    )
+                }
+
+                is Result.Success -> {
+                    _state.update {
+                        it.copy(
+                            isLoadingMoreRepositories = false,
+                            repositories = it.repositories + (result.data ?: emptyList())
+                        )
+                    }
+                }
             }
         }
 
@@ -79,7 +104,10 @@ class MainViewModel(
 
     fun onRefresh() {
         _state.update {
-            it.copy(isRefreshing = true)
+            it.copy(
+                isRefreshing = true,
+                loadError = null
+            )
         }
         viewModelScope.launch {
             githubPaginationSource.resetPager()
@@ -91,19 +119,38 @@ class MainViewModel(
 
             when (result) {
                 is Result.Error -> {
-                    //TODO Handle error
+                    eventsChannel.send(
+                        MainViewModelEvent.RepositoriesLoadFailed(
+                            reason = result.message ?: "Unknown Error"
+                        )
+                    )
+                    _state.update {
+                        it.copy(
+                            loadError = result.message
+                        )
+                    }
                 }
 
                 is Result.Success -> {
                     _state.update {
                         it.copy(
                             repositories = result.data ?: emptyList(),
-                            isRefreshing = false
                         )
                     }
                 }
             }
+
+            _state.update {
+                it.copy(
+                    isRefreshing = false
+                )
+            }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        eventsChannel.close()
     }
 
 }
