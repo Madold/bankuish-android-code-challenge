@@ -25,6 +25,7 @@ fun GithubReposList(
     state: MainState,
     repositories: List<GithubRepository>,
     onBottomReached: () -> Unit,
+    onRepoClick: (GithubRepository) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -48,7 +49,8 @@ fun GithubReposList(
             GithubRepoItem(
                 repository = repository,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                onClick = onRepoClick
             )
         }
 

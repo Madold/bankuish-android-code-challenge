@@ -2,6 +2,7 @@ package com.markusw.bankuishchallenge
 
 import android.app.Application
 import com.markusw.bankuishchallenge.di.appModule
+import com.markusw.bankuishchallenge.di.detailsModule
 import com.markusw.bankuishchallenge.di.mainModule
 import com.markusw.bankuishchallenge.di.networkModule
 import org.koin.android.ext.koin.androidContext
@@ -18,7 +19,8 @@ class BankuishChallengeApp : Application() {
             modules(
                 appModule,
                 networkModule,
-                mainModule
+                mainModule,
+                detailsModule
             )
         }
     }

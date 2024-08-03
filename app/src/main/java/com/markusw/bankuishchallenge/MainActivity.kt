@@ -12,6 +12,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.markusw.bankuishchallenge.core.presentation.Screens
+import com.markusw.bankuishchallenge.details.presentation.DetailsScreen
+import com.markusw.bankuishchallenge.details.presentation.DetailsViewModel
 import com.markusw.bankuishchallenge.main.presentation.MainScreen
 import com.markusw.bankuishchallenge.main.presentation.MainViewModel
 import com.markusw.bankuishchallenge.ui.theme.BankuishAndroidCodeChallengeTheme
@@ -35,7 +37,8 @@ class MainActivity : ComponentActivity() {
 
                             MainScreen(
                                 state = state,
-                                onBottomReached = viewModel::onBottomReached
+                                onBottomReached = viewModel::onBottomReached,
+                                navController = navController
                             )
                         }
 
@@ -47,7 +50,13 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         ) {
-
+                            val viewModel = koinViewModel<DetailsViewModel>()
+                            val state by viewModel.state.collectAsStateWithLifecycle()
+                            
+                            DetailsScreen(
+                                state = state,
+                                navController = navController
+                            )
                         }
 
                     }

@@ -10,12 +10,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
+import com.markusw.bankuishchallenge.core.presentation.Screens
 import com.markusw.bankuishchallenge.main.presentation.components.GithubReposList
 
 @Composable
 fun MainScreen(
     state: MainState,
-    onBottomReached: () -> Unit
+    onBottomReached: () -> Unit,
+    navController: NavHostController
 ) {
     Scaffold(
         topBar = {
@@ -32,7 +35,10 @@ fun MainScreen(
                 .padding(innerPadding)
                 .fillMaxWidth(),
             repositories = state.repositories,
-            onBottomReached = onBottomReached
+            onBottomReached = onBottomReached,
+            onRepoClick = { repository ->
+                navController.navigate("${Screens.Details.route}/${repository.id}")
+            }
         )
     }
 
