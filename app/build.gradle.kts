@@ -49,12 +49,16 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.org.jetbrains.serialization.json)
     implementation(libs.io.insert.koin.core)
+    implementation(libs.io.ktor.client.android)
     implementation(libs.io.insert.koin.compose)
     implementation(libs.io.insert.koin.android)
     implementation(libs.io.ktor.client.core)
     implementation(libs.io.ktor.client.cio)
+    implementation(libs.io.ktor.client.content.negotiation)
+    implementation(libs.io.ktor.serialization.kotlinx.json)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
