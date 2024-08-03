@@ -11,6 +11,7 @@ composeBom = "2024.04.01"
 ktor = "2.3.12"
 koin = "3.5.6"
 kotlinSerialization = "1.7.1"
+navigationCompose = "2.7.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -37,6 +38,7 @@ io-insert-koin-android = { module = "io.insert-koin:koin-android", version.ref =
 io-insert-koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 org-jetbrains-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinSerialization" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeKtx" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
