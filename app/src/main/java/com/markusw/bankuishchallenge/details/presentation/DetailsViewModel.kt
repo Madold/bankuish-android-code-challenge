@@ -3,6 +3,7 @@ package com.markusw.bankuishchallenge.details.presentation
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.markusw.bankuishchallenge.DispatcherProvider
 import com.markusw.bankuishchallenge.core.utils.Result
 import com.markusw.bankuishchallenge.network.domain.model.GithubRepository
 import com.markusw.bankuishchallenge.network.domain.repository.GithubReposRepository
@@ -13,10 +14,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.security.PrivateKey
 
 class DetailsViewModel(
     private val githubReposRepository: GithubReposRepository,
-    private val handle: SavedStateHandle
+    private val handle: SavedStateHandle,
+    private val dispatcherProvider: DispatcherProvider
 ) : ViewModel() {
 
     companion object {
@@ -41,7 +44,7 @@ class DetailsViewModel(
             )
         }
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.io) {
             when (val result = githubReposRepository.getRepository(repoId)) {
                 is Result.Error -> {
                     channel.send(

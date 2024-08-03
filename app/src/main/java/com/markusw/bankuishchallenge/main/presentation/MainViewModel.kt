@@ -2,6 +2,7 @@ package com.markusw.bankuishchallenge.main.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.markusw.bankuishchallenge.DispatcherProvider
 import com.markusw.bankuishchallenge.core.utils.Result
 import com.markusw.bankuishchallenge.main.data.GithubPaginationSource
 import com.markusw.bankuishchallenge.network.domain.repository.GithubReposRepository
@@ -15,7 +16,8 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val githubReposRepository: GithubReposRepository,
-    private val githubPaginationSource: GithubPaginationSource
+    private val githubPaginationSource: GithubPaginationSource,
+    private val dispatcherProvider: DispatcherProvider
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MainState())
@@ -34,7 +36,7 @@ class MainViewModel(
                 loadError = null
             )
         }
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.io) {
             val result = githubReposRepository.getRepositories(
                 language = "kotlin",
                 count = 20,
@@ -79,7 +81,7 @@ class MainViewModel(
         _state.update {
             it.copy(isLoadingMoreRepositories = true)
         }
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.io) {
             when (val result = githubPaginationSource.loadNextPage()) {
                 is Result.Error -> {
                     eventsChannel.send(
@@ -114,7 +116,7 @@ class MainViewModel(
                 loadError = null
             )
         }
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcherProvider.io) {
             githubPaginationSource.resetPager()
             val result = githubReposRepository.getRepositories(
                 language = "kotlin",
