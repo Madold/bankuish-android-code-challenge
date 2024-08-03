@@ -49,6 +49,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.io.coil.kt.coil.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.org.jetbrains.serialization.json)
