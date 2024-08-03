@@ -38,6 +38,7 @@ class MainActivity : ComponentActivity() {
                             MainScreen(
                                 state = state,
                                 onBottomReached = viewModel::onBottomReached,
+                                onRefresh = viewModel::onRefresh,
                                 navController = navController
                             )
                         }

@@ -6,6 +6,7 @@ import com.markusw.bankuishchallenge.core.utils.Result
 import com.markusw.bankuishchallenge.main.data.GithubPaginationSource
 import com.markusw.bankuishchallenge.network.domain.repository.GithubReposRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -74,6 +75,35 @@ class MainViewModel(
             }
         }
 
+    }
+
+    fun onRefresh() {
+        _state.update {
+            it.copy(isRefreshing = true)
+        }
+        viewModelScope.launch {
+            githubPaginationSource.resetPager()
+            val result = githubReposRepository.getRepositories(
+                language = "kotlin",
+                count = 20,
+                page = 1
+            )
+
+            when (result) {
+                is Result.Error -> {
+                    //TODO Handle error
+                }
+
+                is Result.Success -> {
+                    _state.update {
+                        it.copy(
+                            repositories = result.data ?: emptyList(),
+                            isRefreshing = false
+                        )
+                    }
+                }
+            }
+        }
     }
 
 }

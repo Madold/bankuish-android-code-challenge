@@ -1,18 +1,16 @@
-@file:OptIn(FlowPreview::class)
+@file:OptIn(FlowPreview::class, ExperimentalMaterial3Api::class)
 
 package com.markusw.bankuishchallenge.main.presentation.components
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.markusw.bankuishchallenge.core.presentation.components.PullToRefreshLazyColumn
 import com.markusw.bankuishchallenge.main.presentation.MainState
 import com.markusw.bankuishchallenge.main.utils.isLastItemVisible
 import com.markusw.bankuishchallenge.network.domain.model.GithubRepository
@@ -26,6 +24,7 @@ fun GithubReposList(
     repositories: List<GithubRepository>,
     onBottomReached: () -> Unit,
     onRepoClick: (GithubRepository) -> Unit,
+    onRefresh: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -41,7 +40,23 @@ fun GithubReposList(
         }
     }
 
-    LazyColumn(
+    PullToRefreshLazyColumn(
+        modifier = modifier,
+        items = repositories,
+        content = { repository ->
+            GithubRepoItem(
+                repository = repository,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                onClick = onRepoClick
+            )
+        },
+        isRefreshing = state.isRefreshing,
+        onRefresh = onRefresh,
+        lazyListState = scrollState
+    )
+
+    /*LazyColumn(
         modifier = modifier,
         state = scrollState
     ) {
@@ -64,5 +79,7 @@ fun GithubReposList(
                 }
             }
         }
-    }
+    }*/
+
+
 }

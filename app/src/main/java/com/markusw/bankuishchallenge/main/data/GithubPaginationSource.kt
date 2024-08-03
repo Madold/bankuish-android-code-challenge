@@ -36,4 +36,8 @@ class GithubPaginationSource(
         return repositories
     }
 
+    fun resetPager() {
+        currentPage = 2
+    }
+
 }

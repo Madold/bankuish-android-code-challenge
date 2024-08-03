@@ -23,6 +23,7 @@ import com.markusw.bankuishchallenge.main.presentation.components.GithubReposLis
 fun MainScreen(
     state: MainState,
     onBottomReached: () -> Unit,
+    onRefresh: () -> Unit,
     navController: NavHostController
 ) {
     Scaffold(
@@ -56,7 +57,8 @@ fun MainScreen(
                     onBottomReached = onBottomReached,
                     onRepoClick = { repository ->
                         navController.navigate("${Screens.Details.route}/${repository.id}")
-                    }
+                    },
+                    onRefresh = onRefresh
                 )
             }
 
