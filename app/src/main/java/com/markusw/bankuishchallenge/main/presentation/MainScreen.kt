@@ -27,10 +27,10 @@ fun MainScreen(
         }
     ) { innerPadding ->
         GithubReposList(
+            state = state,
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxWidth()
-            ,
+                .fillMaxWidth(),
             repositories = state.repositories,
             onBottomReached = onBottomReached
         )
