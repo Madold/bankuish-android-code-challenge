@@ -92,11 +92,16 @@ class MainViewModel(
                 is Result.Success -> {
                     _state.update {
                         it.copy(
-                            isLoadingMoreRepositories = false,
                             repositories = it.repositories + (result.data ?: emptyList())
                         )
                     }
                 }
+            }
+
+            _state.update {
+                it.copy(
+                    isLoadingMoreRepositories = false
+                )
             }
         }
 

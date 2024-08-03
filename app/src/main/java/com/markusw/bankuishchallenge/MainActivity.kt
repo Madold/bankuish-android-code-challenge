@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.LaunchedEffect
@@ -46,7 +47,10 @@ class MainActivity : ComponentActivity() {
                                 viewModel.events.collectLatest { event ->
                                     when (event) {
                                         is MainViewModelEvent.LoadNextPageFailed -> {
-
+                                            snackBarHostState.showSnackbar(
+                                                message = event.reason,
+                                                duration = SnackbarDuration.Short
+                                            )
                                         }
                                         is MainViewModelEvent.RepositoriesLoadFailed -> {
                                             val result = snackBarHostState.showSnackbar(event.reason, actionLabel = "Try again")

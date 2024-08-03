@@ -17,11 +17,13 @@ class GithubPaginationSource(
     private var currentPage: Int = 2
 
     override suspend fun loadNextPage(): Result<List<GithubRepository>> {
-        return githubReposRepository.getRepositories(
+        val result = githubReposRepository.getRepositories(
             language = LANGUAGE,
             count = PAGE_COUNT,
             page = currentPage
         )
+        currentPage++
+        return result
     }
 
     fun resetPager() {
