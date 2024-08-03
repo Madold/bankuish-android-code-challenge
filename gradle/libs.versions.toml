@@ -13,6 +13,8 @@ koin = "3.5.6"
 kotlinSerialization = "1.7.1"
 navigationCompose = "2.7.7"
 coil = "2.7.0"
+mockk = "1.13.12"
+coroutinesTest = "1.8.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,6 +43,8 @@ org-jetbrains-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-ser
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 io-coil-kt-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+io-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+org-jetbrains-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutinesTest" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
