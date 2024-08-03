@@ -41,4 +41,8 @@ class MainViewModel(
         }
     }
 
+    fun onBottomReached() {
+
+    }
+
 }

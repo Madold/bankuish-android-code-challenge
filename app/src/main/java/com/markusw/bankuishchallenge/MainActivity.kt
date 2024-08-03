@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.markusw.bankuishchallenge.main.presentation.MainScreen
 import com.markusw.bankuishchallenge.main.presentation.MainViewModel
 import com.markusw.bankuishchallenge.main.presentation.components.GithubRepoItem
 import com.markusw.bankuishchallenge.ui.theme.BankuishAndroidCodeChallengeTheme
@@ -36,21 +37,10 @@ class MainActivity : ComponentActivity() {
                 val state by viewModel.state.collectAsStateWithLifecycle()
 
                 BankuishAndroidCodeChallengeTheme {
-                    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                        LazyColumn(
-                            modifier = Modifier
-                                .padding(innerPadding)
-                                .fillMaxSize()
-                        ) {
-                            items(state.repositories) { repository ->
-                                GithubRepoItem(
-                                    repository = repository,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                )
-                            }
-                        }
-                    }
+                    MainScreen(
+                        state = state,
+                        onBottomReached = viewModel::onBottomReached
+                    )
                 }
             }
         }
