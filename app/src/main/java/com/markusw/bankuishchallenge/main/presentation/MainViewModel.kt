@@ -24,6 +24,11 @@ class MainViewModel(
     }
 
     private fun loadInitialRepositories() {
+        _state.update {
+            it.copy(
+                isLoadingInitialRepositories = true
+            )
+        }
         viewModelScope.launch(Dispatchers.IO) {
             val result = githubReposRepository.getRepositories(
                 language = "kotlin",
@@ -39,7 +44,8 @@ class MainViewModel(
                 is Result.Success -> {
                     _state.update {
                         it.copy(
-                            repositories = result.data ?: emptyList()
+                            repositories = result.data ?: emptyList(),
+                            isLoadingInitialRepositories = false
                         )
                     }
                 }
