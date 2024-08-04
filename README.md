@@ -16,6 +16,12 @@
 
 ## Tech stack: Kotlin, Jetpack Compose, Koin, Jetpack Libraries, Ktor, Coil Compose, Android Jetpack Navigation
 
+## Features
+- Loading/Error state
+- Pagination
+- Swipe to refresh
+- Unit/Instrumented Tests
+
 # Demo
 ![App demo](https://github.com/Madold/imgs/blob/main/bankuish-demo.gif?raw=true)
 
