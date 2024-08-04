@@ -33,7 +33,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            BankuishAndroidCodeChallengeTheme {
+            BankuishAndroidCodeChallengeTheme(
+                darkTheme = true,
+                dynamicColor = false
+            ) {
                 KoinContext {
                     val navController = rememberNavController()
 
