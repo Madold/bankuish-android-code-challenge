@@ -42,7 +42,7 @@ fun GithubRepoItem(
                 .padding(vertical = 8.dp)
         ) {
             Text(
-                text = repository.fullName,
+                text = repository.name,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.testTag(ComposeTestTags.REPO_ITEM_TITLE)

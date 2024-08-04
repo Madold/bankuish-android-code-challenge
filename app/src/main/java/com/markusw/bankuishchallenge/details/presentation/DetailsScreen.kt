@@ -66,7 +66,7 @@ fun DetailsScreen(
         topBar = {
             TopAppBar(title = {
                 Text(
-                    text = state.repository.fullName,
+                    text = state.repository.name,
                     style = MaterialTheme.typography.titleLarge
                 )
             },
