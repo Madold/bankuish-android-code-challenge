@@ -10,9 +10,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.markusw.bankuishchallenge.core.presentation.ComposeTestTags
+import com.markusw.bankuishchallenge.core.presentation.ComposeTestTags.REPO_ITEM_AUTHOR_NAME
+import com.markusw.bankuishchallenge.core.presentation.ComposeTestTags.REPO_ITEM_CLICKABLE_CONTAINER
 import com.markusw.bankuishchallenge.network.domain.model.GithubRepository
 import com.markusw.bankuishchallenge.ui.theme.BankuishAndroidCodeChallengeTheme
 
@@ -29,15 +33,17 @@ fun GithubRepoItem(
     ) {
         Column(
             modifier = Modifier
+                .testTag(REPO_ITEM_CLICKABLE_CONTAINER)
                 .fillMaxWidth()
                 .clickable { onClick(repository) }
         ) {
             Text(
                 text = repository.fullName,
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.testTag(ComposeTestTags.REPO_ITEM_TITLE)
             )
-            Text(text = repository.authorName)
+            Text(text = repository.authorName, modifier = Modifier.testTag(REPO_ITEM_AUTHOR_NAME))
         }
     }
 }
