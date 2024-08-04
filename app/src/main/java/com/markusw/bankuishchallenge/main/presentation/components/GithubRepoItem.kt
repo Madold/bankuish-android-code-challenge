@@ -5,11 +5,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,14 +30,16 @@ fun GithubRepoItem(
 ) {
     Box(
         modifier = modifier
-            .padding(16.dp),
+            .padding(horizontal = 16.dp),
         contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier
                 .testTag(REPO_ITEM_CLICKABLE_CONTAINER)
                 .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
                 .clickable { onClick(repository) }
+                .padding(vertical = 8.dp)
         ) {
             Text(
                 text = repository.fullName,
