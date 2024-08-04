@@ -17,6 +17,6 @@
 ## Tech stack: Kotlin, Jetpack Compose, Koin, Jetpack Libraries, Ktor, Coil Compose, Android Jetpack Navigation
 
 # Demo
-![App demo](https://github.com/Madold/Timetonictest/blob/main/2024-05-30%2000-57-41.gif?raw=true)
+![App demo](https://github.com/Madold/imgs/blob/main/bankuish-demo.gif?raw=true)
 
 Used version catalogs for dependency managment.
