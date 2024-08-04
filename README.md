@@ -4,7 +4,7 @@
 ![Feature layer architecture](https://github.com/Madold/Timetonictest/blob/main/feature_layer_diagram.png?raw=true)
 
 ## Design patterns used: MVVM, Repository Pattern, Dependency Injection
-![MVI Pattern](https://github.com/Madold/Timetonictest/blob/main/mvi_pattern.jpg?raw=true)
+![MVVM Pattern](https://github.com/Madold/imgs/blob/main/mvvm.png?raw=true)
 
 ## Repository pattern
 ![Repository pattern](https://raw.githubusercontent.com/Madold/Timetonictest/main/repository_pattern.png)
